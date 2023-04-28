@@ -1,15 +1,20 @@
 import tkinter as tk
 
 class CustomTitleBar(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, db,title):
         super().__init__(parent)
         self.parent = parent
         bg_color = "#FFD700"  # Set the desired background color
         self.configure(bg=bg_color)
         self.pack(fill="x")
+        self.db=db
 
         self.title = tk.Entry(self, relief="flat", justify="center", fg="black", readonlybackground=bg_color, insertbackground=bg_color, bd=0)
-        self.title.insert(0, "To-Do List")
+
+        if not title:  # Check if the title is empty
+            title = "To-Do List"  # Use the hardcoded title if the provided title is empty
+
+        self.title.insert(0, title)
         self.title.config(state="readonly", bg=bg_color)
         self.title.pack(side="left", padx=80, fill="both", expand=True)
 
@@ -40,3 +45,5 @@ class CustomTitleBar(tk.Frame):
 
     def on_title_return(self, event):
         self.title.config(state="readonly")
+        new_title = self.title.get()
+        self.db.save_title(new_title)

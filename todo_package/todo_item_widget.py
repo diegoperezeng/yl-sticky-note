@@ -41,6 +41,11 @@ class TodoItemWidget(tk.Frame):
     def on_check_change(self, *args):
         self.item.checked = self.check_var.get()
         self.app.db_file.save_todo_list(self.app.todo_list)
+        if self.item.checked:
+            self.label.configure(font=("TkDefaultFont", 10, "overstrike"))
+        else:
+            self.label.configure(font=("TkDefaultFont", 10))
+
 
     def on_click(self, event):
         if self.app.selected_item and self.app.selected_item != self:

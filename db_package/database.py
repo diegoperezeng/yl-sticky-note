@@ -1,4 +1,5 @@
 import json
+from src.utils import show_error
 
 class TodoItem:
     def __init__(self, text, checked):
@@ -19,7 +20,8 @@ class TodoListDB:
             title = data.get("title", "To-Do List")
             return todo_list, title
         except (FileNotFoundError, json.JSONDecodeError):
-             return [], "To-Do List on Error"
+            show_error("Error: Unable to load the database file.")
+            return [], "To-Do List on Error"
 
     def save_todo_list(self, todo_list):
         try:

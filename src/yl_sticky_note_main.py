@@ -4,6 +4,7 @@ from db_package.database import TodoListDB, TodoItem
 from todo_package.todo_item_widget import TodoItemWidget
 from todo_package.custom_title_bar import CustomTitleBar
 from todo_package.resizable_window import ResizableWindow
+from src.utils import show_error
 import os
 
 
@@ -22,18 +23,24 @@ class TodoListApp(ResizableWindow):
         # Create Styles
         style = ttk.Style()
         style.configure("Custom.Vertical.TScrollbar", background=bg_color, troughcolor="yellow")
+        
 
-
+        #Access the database file
+        try:
+            db_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'db_package', 'todolistdb.json')
+            self.db_file = TodoListDB(db_file_path)
+        except Exception as e:
+            show_error("Database Error", str(e))  # Use show_error when an exception occurs
+            self.destroy()
+            return
+        
         # Override the default title bar
         self.overrideredirect(True)
-        self.custom_title_bar = CustomTitleBar(self)
-
-        db_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'db_package', 'todolistdb.json')
-        self.db_file = TodoListDB(db_file_path)
+        self.custom_title_bar = CustomTitleBar(self,self.db_file,self.db_file.title)
 
         self.todo_list, title = self.db_file.get_todo_list_and_title()
         self.custom_title_bar.title.delete(0, tk.END)
-        self.custom_title_bar.title.insert(0, title)
+        self.custom_title_bar.title.insert(0, self.db_file.title)
 
         self.list_canvas = tk.Canvas(self, bg=bg_color, highlightthickness=0)  # Set the background color to #FFD700
         self.list_canvas.pack(fill="both", expand=True)
@@ -89,7 +96,6 @@ class TodoListApp(ResizableWindow):
         else:
             y_pos = 5
         self.new_item_entry.place(in_=self.list_canvas, x=5, y=y_pos, relwidth=0.95)
-
 
     def update_listbox(self):
         selected_item = None
