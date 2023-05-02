@@ -1,0 +1,11 @@
+{
+    "title": "List Title",
+    "font_type": "Arial",
+    "font_size": 20,    
+    "todo_list": [
+        {
+            "text": "Example item 1",
+            "checked": false
+        }
+    ]
+}

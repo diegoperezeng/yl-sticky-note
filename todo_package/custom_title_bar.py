@@ -1,7 +1,7 @@
 import tkinter as tk
 
 class CustomTitleBar(tk.Frame):
-    def __init__(self, parent, db,title):
+    def __init__(self, parent, db,title, custom_font):
         super().__init__(parent)
         self.parent = parent
         bg_color = "#FFD700"  # Set the desired background color
@@ -15,7 +15,7 @@ class CustomTitleBar(tk.Frame):
             title = "To-Do List"  # Use the hardcoded title if the provided title is empty
 
         self.title.insert(0, title)
-        self.title.config(state="readonly", bg=bg_color)
+        self.title.config(state="readonly", bg=bg_color, font=custom_font)
         self.title.pack(side="left", padx=80, fill="both", expand=True)
 
         close_button = tk.Button(self, text="X", bg=bg_color, command=self.parent.destroy, relief=tk.FLAT)

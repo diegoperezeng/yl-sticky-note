@@ -3,7 +3,7 @@ from todo_package.selectable_label import SelectableLabel
 from db_package.database import TodoListDB, TodoItem
 
 class TodoItemWidget(tk.Frame):
-    def __init__(self, parent, item, app):
+    def __init__(self, parent, item, custom_font, app):
         super().__init__(parent)
         self.configure(bg="#FFD700")  # Set the background color to #FFD700
 
@@ -15,7 +15,7 @@ class TodoItemWidget(tk.Frame):
         self.checkbox = tk.Checkbutton(self, variable=self.check_var, bg="#FFD700", activebackground="#FFD700")  # Set the background color to #FFD700
         self.checkbox.pack(side="left")
 
-        self.label = SelectableLabel(self, item.text, bg="#FFD700")  # Set the background color to #FFD700
+        self.label = SelectableLabel(self, item.text, custom_font, bg="#FFD700")  # Set the background color to #FFD700
         self.label.pack(side="left", fill="x", expand=True)
         
         self.bind("<Button-1>", self.on_click)
@@ -42,9 +42,9 @@ class TodoItemWidget(tk.Frame):
         self.item.checked = self.check_var.get()
         self.app.db_file.save_todo_list(self.app.todo_list)
         if self.item.checked:
-            self.label.configure(font=("TkDefaultFont", 10, "overstrike"))
+            self.label.configure(font=(self.custom_font, "overstrike"))
         else:
-            self.label.configure(font=("TkDefaultFont", 10))
+            self.label.configure(font=self.custom_font)
 
 
     def on_click(self, event):
