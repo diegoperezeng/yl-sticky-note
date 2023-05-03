@@ -215,7 +215,12 @@ class TodoListApp(ResizableWindow):
 
         self.list_frame.update_idletasks()
         self.list_canvas.config(scrollregion=self.list_canvas.bbox("all"))
-
+    
+    def toggle_strikethrough(self, index, var):
+        if var.get():
+            self.todo_list_widgets[index].config(font=("TkDefaultFont", 10, "overstrike"))
+        else:
+            self.todo_list_widgets[index].config(font=("TkDefaultFont", 10))
 
     def add_item(self):
         new_item = self.new_item_entry.get()
@@ -237,7 +242,7 @@ class TodoListApp(ResizableWindow):
             self.selected_item = None
 
     def edit_item(self):
-        pass
+        pass    
 
     def on_closing(self):
         self.db_file.save_todo_list(self.todo_list)

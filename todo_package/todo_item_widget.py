@@ -12,7 +12,9 @@ class TodoItemWidget(tk.Frame):
         self.app = app
 
         self.check_var = tk.BooleanVar(value=item.checked)
-        self.check_var.trace_add("write", self.on_check_change)
+        #self.check_var.trace_add("write", self.on_check_change)
+        self.check_var.trace_add("write", lambda *args: self.on_check_change(main_window))
+
 
         self.checkbox = tk.Checkbutton(self, variable=self.check_var, bg="#FFD700", activebackground="#FFD700")  # Set the background color to #FFD700
         self.checkbox.pack(side="left")
@@ -42,13 +44,21 @@ class TodoItemWidget(tk.Frame):
             self.app.db_file.save_todo_list(self.app.todo_list)
         self.label.selection_clear()
     
-    def on_check_change(self, *args):
+    # def on_check_change(self, *args):
+    #     self.item.checked = self.check_var.get()
+    #     self.app.db_file.save_todo_list(self.app.todo_list)
+    #     if self.item.checked:
+    #         self.label.configure(font=(self.custom_font, "overstrike"))
+    #     else:
+    #         self.label.configure(font=self.custom_font)
+
+    def on_check_change(self, main_window, *args):
         self.item.checked = self.check_var.get()
         self.app.db_file.save_todo_list(self.app.todo_list)
         if self.item.checked:
-            self.label.configure(font=(self.custom_font, "overstrike"))
+            self.label.configure(font=(main_window.custom_font.actual()["family"], main_window.custom_font.actual()["size"], "overstrike"))
         else:
-            self.label.configure(font=self.custom_font)
+            self.label.configure(font=(main_window.custom_font.actual()["family"], main_window.custom_font.actual()["size"]))
 
 
     def on_click(self, event):
