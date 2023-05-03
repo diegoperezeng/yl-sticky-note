@@ -1,0 +1,43 @@
+{
+    "title": "Tarefa 1 - Fluxo Repasse Individual - verificar arquivos",
+    "font_type": "Arial",
+    "font_size": 15,
+    "todo_list": [
+        {
+            "text": "FluxoRepasseIndividualSchedulerConfig.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualDTO.java",
+            "checked": false
+        },
+        {
+            "text": "CobrancaMovimento.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualCoop.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualRepository.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualServiceImpl.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualService.java",
+            "checked": false
+        },
+        {
+            "text": "FluxoRepasseIndividualUtil.java",
+            "checked": false
+        },
+        {
+            "text": "bootstrap-local.yml",
+            "checked": false
+        }
+    ]
+}

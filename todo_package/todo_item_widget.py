@@ -3,20 +3,26 @@ from todo_package.selectable_label import SelectableLabel
 from db_package.database import TodoListDB, TodoItem
 
 class TodoItemWidget(tk.Frame):
-    def __init__(self, parent, item, app):
+    def __init__(self, parent, item, custom_font, app, main_window):
         super().__init__(parent)
         self.configure(bg="#FFD700")  # Set the background color to #FFD700
+
+        self.main_window = main_window
 
         self.app = app
 
         self.check_var = tk.BooleanVar(value=item.checked)
-        self.check_var.trace_add("write", self.on_check_change)
+        #self.check_var.trace_add("write", self.on_check_change)
+        self.check_var.trace_add("write", lambda *args: self.on_check_change(main_window))
+
 
         self.checkbox = tk.Checkbutton(self, variable=self.check_var, bg="#FFD700", activebackground="#FFD700")  # Set the background color to #FFD700
         self.checkbox.pack(side="left")
 
-        self.label = SelectableLabel(self, item.text, bg="#FFD700")  # Set the background color to #FFD700
+        self.label = SelectableLabel(self, item.text, custom_font, bg="#FFD700")  # Set the background color to #FFD700
         self.label.pack(side="left", fill="x", expand=True)
+        
+        self.main_window.bind("<Configure>", self.update_label_width) # Add a bind to the main window's resizing event
         
         self.bind("<Button-1>", self.on_click)
         self.label.bind("<Button-1>", self.on_click)
@@ -38,9 +44,22 @@ class TodoItemWidget(tk.Frame):
             self.app.db_file.save_todo_list(self.app.todo_list)
         self.label.selection_clear()
     
-    def on_check_change(self, *args):
+    # def on_check_change(self, *args):
+    #     self.item.checked = self.check_var.get()
+    #     self.app.db_file.save_todo_list(self.app.todo_list)
+    #     if self.item.checked:
+    #         self.label.configure(font=(self.custom_font, "overstrike"))
+    #     else:
+    #         self.label.configure(font=self.custom_font)
+
+    def on_check_change(self, main_window, *args):
         self.item.checked = self.check_var.get()
         self.app.db_file.save_todo_list(self.app.todo_list)
+        if self.item.checked:
+            self.label.configure(font=(main_window.custom_font.actual()["family"], main_window.custom_font.actual()["size"], "overstrike"))
+        else:
+            self.label.configure(font=(main_window.custom_font.actual()["family"], main_window.custom_font.actual()["size"]))
+
 
     def on_click(self, event):
         if self.app.selected_item and self.app.selected_item != self:
@@ -59,3 +78,8 @@ class TodoItemWidget(tk.Frame):
     def on_click_checkbox(self, event):
         if self.app.selected_item and self.app.selected_item != self:            
             self.app.selected_item.item.checked
+
+    # Add this method to handle updating the label width
+    def update_label_width(self, event):
+        new_width = self.main_window.winfo_width() - self.checkbox.winfo_reqwidth() - 30  # Adjust the number if needed
+        self.label.configure(width=new_width)
