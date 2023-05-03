@@ -56,10 +56,14 @@ class TodoListApp(ResizableWindow):
 
     def update_entry_width(self, event):
         parent_width = event.width
-        entry_width = parent_width - 100
-        #entry_pixels = self.new_item_entry.tk.call("font", "measure", self.new_item_entry.cget("font"), "0")
-        entry_chars = entry_width #// entry_pixels
+        entry_width = parent_width - 10
+        entry_chars = entry_width
         self.new_item_entry.config(width=entry_chars)
+        # Add these lines to update the new item entry width when the window resizes
+        if self.todo_list_widgets and hasattr(self, 'new_item_entry_id'):
+            last_item_widget = self.todo_list_widgets[-1]
+            y_pos = last_item_widget.winfo_y() + last_item_widget.winfo_height() + 5
+            self.list_canvas.itemconfigure(self.new_item_entry_id, width=self.list_canvas.winfo_width() - self.scrollbar.winfo_width() - 10)
 
     def __init__(self):
         super().__init__()
@@ -68,7 +72,7 @@ class TodoListApp(ResizableWindow):
         self.attributes("-topmost", True)
         bg_color = "#FFD700"  # Set the desired background color
         self.configure(bg=bg_color)  # Change the background color to #FFD700
-
+        
         #Access the database file
         try:
             db_file_path = create_database_file()
@@ -174,7 +178,19 @@ class TodoListApp(ResizableWindow):
             y_pos = last_item_widget.winfo_y() + last_item_widget.winfo_height() + 5
         else:
             y_pos = 5
-        self.new_item_entry.place(in_=self.list_canvas, x=5, y=y_pos, relwidth=0.95)
+        
+         # If there's already an entry in the canvas, delete it
+        if hasattr(self, 'new_item_entry_id'):
+            self.list_canvas.delete(self.new_item_entry_id)
+        
+         # Create a new window item for the entry
+        self.new_item_entry_id = self.list_canvas.create_window(
+            5, y_pos, window=self.new_item_entry, anchor="nw",
+            width=self.list_canvas.winfo_width() - self.scrollbar.winfo_width() - 10
+        )
+        
+        #self.new_item_entry.place(in_=self.list_canvas, x=5, y=y_pos, relwidth=0.95)
+        self.list_canvas.create_window(5, y_pos, window=self.new_item_entry, anchor="nw", width=self.list_canvas.winfo_width() - self.scrollbar.winfo_width() - 10)
 
     def update_listbox(self):
         selected_item = None
@@ -188,7 +204,7 @@ class TodoListApp(ResizableWindow):
         self.todo_list_widgets = []
 
         for item in self.todo_list:
-            item_widget = TodoItemWidget(self.list_frame, item, self.custom_font, self)
+            item_widget = TodoItemWidget(self.list_frame, item, self.custom_font, self, self)
             item_widget.pack(fill="x")
             self.todo_list_widgets.append(item_widget)
             if item == selected_item:

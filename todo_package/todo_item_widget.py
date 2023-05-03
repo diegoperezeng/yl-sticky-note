@@ -3,9 +3,11 @@ from todo_package.selectable_label import SelectableLabel
 from db_package.database import TodoListDB, TodoItem
 
 class TodoItemWidget(tk.Frame):
-    def __init__(self, parent, item, custom_font, app):
+    def __init__(self, parent, item, custom_font, app, main_window):
         super().__init__(parent)
         self.configure(bg="#FFD700")  # Set the background color to #FFD700
+
+        self.main_window = main_window
 
         self.app = app
 
@@ -17,6 +19,8 @@ class TodoItemWidget(tk.Frame):
 
         self.label = SelectableLabel(self, item.text, custom_font, bg="#FFD700")  # Set the background color to #FFD700
         self.label.pack(side="left", fill="x", expand=True)
+        
+        self.main_window.bind("<Configure>", self.update_label_width) # Add a bind to the main window's resizing event
         
         self.bind("<Button-1>", self.on_click)
         self.label.bind("<Button-1>", self.on_click)
@@ -64,3 +68,8 @@ class TodoItemWidget(tk.Frame):
     def on_click_checkbox(self, event):
         if self.app.selected_item and self.app.selected_item != self:            
             self.app.selected_item.item.checked
+
+    # Add this method to handle updating the label width
+    def update_label_width(self, event):
+        new_width = self.main_window.winfo_width() - self.checkbox.winfo_reqwidth() - 30  # Adjust the number if needed
+        self.label.configure(width=new_width)
